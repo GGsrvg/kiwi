@@ -21,3 +21,24 @@ improvement. Memory savings are consistently > 5x.
 
 In addition to the C++ solver, Kiwi ships with hand-rolled Python bindings for
 Python 3.7+.
+
+How to use:
+-----------
+
+C++ with CMake
+^^^^^^^^^^^^^^^^^
+
+```
+include(FetchContent)
+FetchContent_Declare(
+    kiwi
+    GIT_REPOSITORY https://github.com/nucleic/kiwi
+    GIT_TAG        {release name}
+)
+FetchContent_MakeAvailable(kiwi)
+
+target_link_libraries(your_target PRIVATE kiwi::kiwi)
+```
+
+
+
