@@ -1,7 +1,7 @@
 Kiwi Release Notes
 ==================
 
-Wrappers 1.5.0 | Solver 1.5.0 | unreleased
+Wrappers 1.5.0 | Solver 1.5.0 | 09/03/2026
 ------------------------------------------
 - add support for CMakeLists PR #206
 - implement more move constructor in the C++ code PR #207
