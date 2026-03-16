@@ -8,17 +8,8 @@
 
 cmake_minimum_required(VERSION 3.15)
 
-# Read version from version.h
-file(READ "${CMAKE_CURRENT_SOURCE_DIR}/kiwi/version.h" VERSION_FILE)
-string(REGEX MATCH "KIWI_MAJOR_VERSION ([0-9]+)" _ ${VERSION_FILE})
-set(KIWI_MAJOR_VERSION ${CMAKE_MATCH_1})
-string(REGEX MATCH "KIWI_MINOR_VERSION ([0-9]+)" _ ${VERSION_FILE})
-set(KIWI_MINOR_VERSION ${CMAKE_MATCH_1})
-string(REGEX MATCH "KIWI_MICRO_VERSION ([0-9]+)" _ ${VERSION_FILE})
-set(KIWI_MICRO_VERSION ${CMAKE_MATCH_1})
-
 project(kiwi 
-    VERSION ${KIWI_MAJOR_VERSION}.${KIWI_MINOR_VERSION}.${KIWI_MICRO_VERSION}
+    VERSION 1.5.0
     LANGUAGES CXX
     DESCRIPTION "A fast implementation of the Cassowary constraint solver"
 )
@@ -33,6 +24,7 @@ endif()
 # Options
 option(KIWI_BUILD_BENCHMARKS "Build benchmarks" ${KIWI_IS_TOP_LEVEL})
 option(KIWI_BUILD_TESTS "Build tests" ${KIWI_IS_TOP_LEVEL})
+option(KIWI_GENERATE_VERSION_HEADER "Generate version header" ${KIWI_IS_TOP_LEVEL})
 
 # C++ standard
 set(CMAKE_CXX_STANDARD 11)
@@ -67,6 +59,15 @@ endif()
 # Tests
 if(KIWI_BUILD_TESTS)
     add_subdirectory(tests)
+endif()
+
+# Version header
+if(KIWI_GENERATE_VERSION_HEADER)
+    configure_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/kiwi/version.h.in
+        ${CMAKE_CURRENT_BINARY_DIR}/generated/version.h
+    )
+    target_include_directories(kiwi INTERFACE ${CMAKE_CURRENT_BINARY_DIR}/generated)
 endif()
 
 # Print configuration summary

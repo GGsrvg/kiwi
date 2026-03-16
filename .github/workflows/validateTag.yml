@@ -1,0 +1,46 @@
+name: Version check with tag
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  check:
+    name: Check tag version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Extract tag version
+        id: tag
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          VERSION=${TAG_NAME#v}
+          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          
+      - name: Extract CMake version
+        id: cmake
+        run: |
+          VERSION=$(grep -oP 'VERSION \K[0-9]+\.[0-9]+\.[0-9]+' CMakeLists.txt)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Compare versions
+        run: |
+          if [ "${{ steps.tag.outputs.version }}" = "${{ steps.cmake.outputs.version }}" ]; then
+            echo "Tag version matches CMakeLists.txt version: ${{ steps.tag.outputs.version }}"
+          else
+            echo "Tag version (${{ steps.tag.outputs.version }}) does not match CMakeLists.txt version (${{ steps.cmake.outputs.version }})"
+            exit 1
+          fi
+
+      - name: Delete tag if version mismatch
+        if: failure()
+        run: |
+          git push --delete origin ${{ steps.tag.outputs.tag_name }}
+          echo "Deleting tag ${{ steps.tag.outputs.tag_name }} due to version mismatch"
+      
+
+  
