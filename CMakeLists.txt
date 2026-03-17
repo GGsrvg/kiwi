@@ -24,7 +24,6 @@ endif()
 # Options
 option(KIWI_BUILD_BENCHMARKS "Build benchmarks" ${KIWI_IS_TOP_LEVEL})
 option(KIWI_BUILD_TESTS "Build tests" ${KIWI_IS_TOP_LEVEL})
-option(KIWI_GENERATE_VERSION_HEADER "Generate version header" ${KIWI_IS_TOP_LEVEL})
 
 # C++ standard
 set(CMAKE_CXX_STANDARD 11)
@@ -34,6 +33,13 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Header-only library
 add_library(kiwi INTERFACE)
 add_library(kiwi::kiwi ALIAS kiwi)
+
+# Add version header
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/kiwi/version.h.in
+    ${CMAKE_CURRENT_BINARY_DIR}/generated/version.h
+)
+target_include_directories(kiwi INTERFACE ${CMAKE_CURRENT_BINARY_DIR}/generated)
 
 target_include_directories(kiwi
     INTERFACE
@@ -61,20 +67,10 @@ if(KIWI_BUILD_TESTS)
     add_subdirectory(tests)
 endif()
 
-# Version header
-if(KIWI_GENERATE_VERSION_HEADER)
-    configure_file(
-        ${CMAKE_CURRENT_SOURCE_DIR}/kiwi/version.h.in
-        ${CMAKE_CURRENT_BINARY_DIR}/generated/version.h
-    )
-    target_include_directories(kiwi INTERFACE ${CMAKE_CURRENT_BINARY_DIR}/generated)
-endif()
-
 # Print configuration summary
 message(STATUS "")
 message(STATUS "Kiwi Configuration Summary:")
 message(STATUS "  Version: ${PROJECT_VERSION}")
 message(STATUS "  C++ Standard: C++${CMAKE_CXX_STANDARD}")
 message(STATUS "  Build benchmarks: ${KIWI_BUILD_BENCHMARKS}")
-message(STATUS "  Build tests: ${KIWI_BUILD_TESTS}")
 message(STATUS "")
