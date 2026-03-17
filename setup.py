@@ -31,7 +31,7 @@ ext_modules = [
             "py/src/term.cpp",
             "py/src/variable.cpp",
         ],
-        include_dirs=["."],
+        include_dirs=[".", "build/generated"],
         language="c++",
     ),
 ]
