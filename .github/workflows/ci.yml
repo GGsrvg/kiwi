@@ -129,6 +129,7 @@ jobs:
       - name: Configure CMake
         run: |
           cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+          cmake --build build
       - name: Install project
         env:
           CPPFLAGS: --coverage
