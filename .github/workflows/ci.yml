@@ -126,6 +126,9 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
+      - name: Configure CMake
+        run: |
+          cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
       - name: Install project
         env:
           CPPFLAGS: --coverage
